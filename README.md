@@ -53,7 +53,7 @@ Todo o conteúdo está em `src/data/mock.js`, e **tudo ali é texto de exemplo**
 
 ## Modo totem
 
-Abra o site com `?totem=1` (por exemplo, como página inicial do Fully Kiosk Browser). Nesse modo, a busca de colegas já abre com o teclado na tela e, depois de 60 segundos sem toques o site volta sozinho para a tela inicial, e a seleção de texto fica desligada. No celular do visitante isso não acontece. Para desligar, abra com `?totem=0`. O tempo fica em `src/hooks/useIdleReset.js`.
+Abra o site com `?totem=1` (por exemplo, como página inicial do Fully Kiosk Browser). Nesse modo, a busca de colegas abre um teclado na tela ao tocar no campo e, depois de 60 segundos sem toques o site volta sozinho para a tela inicial, e a seleção de texto fica desligada. No celular do visitante isso não acontece. Para desligar, abra com `?totem=0`. O tempo fica em `src/hooks/useIdleReset.js`.
 
 ## Fase 2 em diante
 

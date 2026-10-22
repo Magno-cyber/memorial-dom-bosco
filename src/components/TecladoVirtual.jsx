@@ -4,7 +4,7 @@ const tecla =
   'flex min-h-[60px] min-w-11 flex-1 items-center justify-center rounded-lg bg-creme-claro font-texto text-2xl font-semibold text-marinho shadow-lg shadow-marinho/10 transition-transform duration-150 active:translate-y-0.5 active:scale-95 active:bg-dourado-claro'
 
 // Teclado na tela para o totem. Só mexe no texto: aoDigitar recebe o novo valor.
-export default function TecladoVirtual({ valor, aoDigitar }) {
+export default function TecladoVirtual({ valor, aoDigitar, aoFechar }) {
   return (
     <div
       role="group"
@@ -36,6 +36,9 @@ export default function TecladoVirtual({ valor, aoDigitar }) {
         </button>
         <button type="button" className={`${tecla} flex-[5]`} onClick={() => aoDigitar(valor + ' ')}>
           espaço
+        </button>
+        <button type="button" aria-label="Fechar teclado" className={`${tecla} max-w-48 bg-marinho! text-lg text-creme!`} onClick={aoFechar}>
+          Pronto
         </button>
       </div>
     </div>

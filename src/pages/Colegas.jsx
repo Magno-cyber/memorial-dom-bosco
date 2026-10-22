@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import PageHeader from '../components/PageHeader.jsx'
 import TecladoVirtual from '../components/TecladoVirtual.jsx'
@@ -19,11 +19,32 @@ const iniciais = (nome) =>
     .map((p) => p[0].toUpperCase())
     .join('')
 
-// RF09 (demonstração): busca de colegas por nome, com teclado na tela para o totem.
+// RF09 (demonstração): busca de colegas por nome. No totem (?totem=1) o teclado na
+// tela abre ao tocar no campo; no celular e no computador vale o teclado do aparelho.
 export default function Colegas() {
   const [busca, setBusca] = useState('')
-  const [teclado, setTeclado] = useState(modoTotem)
+  const [teclado, setTeclado] = useState(false)
+  const campo = useRef(null)
+  const areaTeclado = useRef(null)
   const [aberto, setAberto] = useState(null)
+
+  // Fecha o teclado ao tocar fora do campo e do teclado, ou com Esc.
+  useEffect(() => {
+    if (!teclado) return
+    const fora = (e) => {
+      if (campo.current?.contains(e.target) || areaTeclado.current?.contains(e.target)) return
+      setTeclado(false)
+    }
+    const esc = (e) => e.key === 'Escape' && setTeclado(false)
+    document.addEventListener('pointerdown', fora)
+    document.addEventListener('keydown', esc)
+    return () => {
+      document.removeEventListener('pointerdown', fora)
+      document.removeEventListener('keydown', esc)
+    }
+  }, [teclado])
+
+  const abrirTeclado = () => modoTotem && setTeclado(true)
 
   const todas = useMemo(() => [...lerCheckins(), ...pessoas], [])
   const termos = limpar(busca).split(/\s+/).filter(Boolean)
@@ -43,32 +64,25 @@ export default function Colegas() {
             type="search"
             value={busca}
             onChange={(e) => setBusca(e.target.value)}
-            readOnly={teclado}
-            inputMode={teclado ? 'none' : 'search'}
+            ref={campo}
+            onFocus={abrirTeclado}
+            onClick={abrirTeclado}
+            readOnly={modoTotem}
+            inputMode={modoTotem ? 'none' : 'search'}
             aria-label="Buscar pelo nome"
             placeholder="Digite um nome, ex.: joao sales"
             className="min-h-16 w-full rounded-xl border-2 border-dourado bg-creme-claro pr-5 pl-14 text-2xl text-marinho placeholder:text-marinho-suave/70"
           />
         </div>
 
-        <div className="mt-3 flex items-center justify-between gap-3">
-          <button
-            type="button"
-            aria-pressed={teclado}
-            onClick={() => setTeclado((v) => !v)}
-            className="min-h-[60px] rounded-xl border-2 border-creme-linha px-5 font-texto text-xl font-semibold active:scale-95 aria-pressed:border-marinho aria-pressed:bg-marinho aria-pressed:text-creme"
-          >
-            Teclado na tela
-          </button>
-          <p role="status" className="text-lg text-marinho-suave">
-            {lista.length === 1 ? '1 pessoa' : `${lista.length} pessoas`}
-            {termos.length ? (lista.length === 1 ? ' encontrada' : ' encontradas') : ' no memorial'} · dados de exemplo
-          </p>
-        </div>
+        <p role="status" className="mt-4 text-lg text-marinho-suave">
+          {lista.length === 1 ? '1 pessoa' : `${lista.length} pessoas`}
+          {termos.length ? (lista.length === 1 ? ' encontrada' : ' encontradas') : ' no memorial'} · dados de exemplo
+        </p>
 
         {teclado && (
-          <div className="mt-4">
-            <TecladoVirtual valor={busca} aoDigitar={setBusca} />
+          <div ref={areaTeclado} className="mt-4">
+            <TecladoVirtual valor={busca} aoDigitar={setBusca} aoFechar={() => setTeclado(false)} />
           </div>
         )}
 
