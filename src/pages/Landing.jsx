@@ -31,7 +31,10 @@ export default function Landing() {
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-y-0 left-0 hidden w-1/3 opacity-[0.07] blur-[3px] wide:block"
-        style={{ maskImage: 'linear-gradient(to right, #1F3A5F 30%, transparent)' }}
+        style={{
+          WebkitMaskImage: 'linear-gradient(to right, #1F3A5F 30%, transparent)',
+          maskImage: 'linear-gradient(to right, #1F3A5F 30%, transparent)',
+        }}
       >
         <Cena nome="fachada" tom={0} className="size-full" />
       </div>

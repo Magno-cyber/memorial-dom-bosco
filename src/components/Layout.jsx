@@ -11,7 +11,7 @@ export default function Layout() {
   }, [pathname])
 
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="flex min-h-screen flex-col">
       <a
         href="#conteudo"
         className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:bg-marinho focus:px-5 focus:py-3 focus:text-creme"
