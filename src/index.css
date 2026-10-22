@@ -1,0 +1,191 @@
+@import '@fontsource-variable/playfair-display';
+@import '@fontsource-variable/playfair-display/wght-italic.css';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/inter/wght-italic.css';
+@import 'tailwindcss';
+
+/* "wide": telas largas e DEITADAS (desktop, TV). Telas em pé, como um totem
+   vertical, mantêm a disposição em coluna única. */
+@custom-variant wide (@media (min-width: 64rem) and (orientation: landscape));
+
+@theme {
+  /* Paleta provisória estimada a partir das referências.
+     Trocar aqui quando o marketing enviar a paleta oficial. */
+  --color-creme: #f5efe4;
+  --color-creme-claro: #faf5ea;
+  --color-creme-fundo: #ebe2d0;
+  --color-creme-linha: #d9ccb2;
+  --color-marinho: #1f3a5f;
+  --color-marinho-suave: #4a617f;
+  --color-dourado: #b8925a;
+  --color-dourado-claro: #e6d3ae;
+  --color-dourado-escuro: #8a6a38;
+
+  /* Títulos, anos e destaques: Playfair Display (serifada de alto contraste).
+     Corpo, menus e legendas: Inter (sem serifa, leitura rápida no totem). */
+  --font-titulo: 'Playfair Display Variable', Georgia, serif;
+  --font-texto: 'Inter Variable', system-ui, sans-serif;
+  --font-legenda: 'Playfair Display Variable', Georgia, serif;
+  
+  /* Curva com leve "ricochete", dá a sensação de mola nos toques */
+  --ease-mola: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --animate-flutuar: flutuar 7s ease-in-out infinite;
+  --animate-entrar: entrar 0.7s var(--ease-mola) both;
+  --animate-pop: pop 0.45s var(--ease-mola) both;
+  --animate-balancar: balancar 0.6s ease-in-out;
+  --animate-pulsar: pulsar 2.4s ease-out infinite;
+
+  @keyframes flutuar {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  @keyframes entrar {
+    from {
+      opacity: 0;
+      transform: translateY(28px) scale(0.92);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes pulsar {
+    0% {
+      box-shadow: 0 0 0 0 rgba(184, 146, 90, 0.6);
+    }
+    70%,
+    100% {
+      box-shadow: 0 0 0 1.1rem rgba(184, 146, 90, 0);
+    }
+  }
+  @keyframes balancar {
+    0%,
+    100% {
+      rotate: 0deg;
+    }
+    20% {
+      rotate: -16deg;
+    }
+    40% {
+      rotate: 14deg;
+    }
+    60% {
+      rotate: -9deg;
+    }
+    80% {
+      rotate: 6deg;
+    }
+  }
+}
+
+@layer base {
+  html {
+    /* Tudo é medido em rem: o conteúdo cresce junto com a tela do totem.
+       Usa o menor lado da tela, então o tamanho é o mesmo em pé ou deitado
+       (16px no celular, cerca de 22px em totens de 1080 pixels). */
+    font-size: clamp(16px, calc(0.9vmin + 12px), 26px);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-creme);
+    color: var(--color-marinho);
+    font-family: var(--font-texto);
+    line-height: 1.6;
+  }
+
+  /* Papel envelhecido: granulado fino por cima de tudo, sem interferir nos toques */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.45  0 0 0 0 0.36  0 0 0 0 0.22  0 0 0 0.11 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* Interface de toque (totem): texto não é selecionado por acidente e não
+     aparece o menu de toque longo. Só os campos de digitação continuam editáveis. */
+  body {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+  input,
+  textarea {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  /* Modo totem (abrir o site com ?totem=1): sem "puxar para atualizar" */
+  html.totem body {
+    overscroll-behavior: none;
+  }
+
+  /* Remove o brilho cinza ao tocar (Android) */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    --tw-ring-offset-color: var(--color-creme);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-titulo);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  button,
+  a {
+    touch-action: manipulation;
+  }
+
+  /* Alvos de toque: nada que se toque tem menos de 60 x 60 px */
+  :where(button, a[href], select, summary, input:not([type='checkbox'])):not(.sr-only) {
+    min-height: 60px;
+    min-width: 60px;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-dourado-escuro);
+    outline-offset: 3px;
+  }
+}
+
+@layer utilities {
+  /* Esconde a barra de rolagem mantendo o arrasto por toque */
+  .sem-barra {
+    scrollbar-width: none;
+  }
+  .sem-barra::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
